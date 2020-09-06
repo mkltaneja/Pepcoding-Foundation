@@ -10,3 +10,4 @@ int main()
         n /= 10;
     }
     return 0;
+}
