@@ -25,23 +25,16 @@ int main()
         count++;
         nn /= 10;
     }
-    int K = abs(k) % count;
-    if(k > 0)
-    {
-        int cut = pow(10, K);
-        int shifted = n % cut;
-        n /= cut;
-        shifted *= pow(10, (count-K));
-        n += shifted;
-    }
-    else
-    {
-        int cut = pow(10, (count-K));
-        int shifted = n % cut;
-        n /= cut;
-        shifted *= pow(10, K);
-        n += shifted;
-    }
+    k = k % count;
+    if(k < 0)
+        k += count;
+    
+    int cut = pow(10, K);
+    int shifted = n % cut;
+    n /= cut;
+    shifted *= pow(10, (count-K));
+    n += shifted;
+    
     cout<<n;
     
     return 0;
