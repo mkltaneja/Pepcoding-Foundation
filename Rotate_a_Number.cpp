@@ -29,10 +29,10 @@ int main()
     if(k < 0)
         k += count;
     
-    int cut = pow(10, K);
+    int cut = pow(10, k);
     int shifted = n % cut;
     n /= cut;
-    shifted *= pow(10, (count-K));
+    shifted *= pow(10, (count-k));
     n += shifted;
     
     cout<<n;
