@@ -21,3 +21,21 @@ int main()
 
     return 0;
 }
+
+// APPROACH 2 (without using array)
+#include <iostream>
+#include <vector>
+using namespace std;
+int main()
+{
+    int n, b, p = 1, ans = 0;
+    cin >> n >> b;
+    while (n)
+    {
+        ans += (n % b) * p;
+        p *= 10;
+        n /= b;
+    }
+    cout << ans;
+    return 0;
+}
