@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <climits>
 using namespace std;
 
 void add_edge(int u, int v, int w, vector<vector<pair<int, int>>> &gp)
@@ -9,63 +10,50 @@ void add_edge(int u, int v, int w, vector<vector<pair<int, int>>> &gp)
     gp[v].push_back({u, w});
 }
 
-void Solutions(int src, int dest, int wsf, string path, vector<vector<pair<int, int>>> &gp, vector<bool> &vis, priority_queue<pair<int, string>> &pq)
+int mini = INT_MAX;
+int maxi = INT_MIN;
+int smaller = INT_MIN;
+int larger = INT_MAX;
+string minpath = "";
+string maxpath = "";
+string smallerpath = "";
+string largerpath = "";
+
+void Solutions(int src, int dest, int wsf, string path, vector<vector<pair<int, int>>> &gp, vector<bool> &vis, priority_queue<pair<int, string>> &pq, int cri, int k)
 {
     if (src == dest)
     {
         pq.push({wsf, path});
+        if (wsf < mini)
+        {
+            mini = wsf;
+            minpath = path;
+        }
+        if (wsf > maxi)
+        {
+            maxi = wsf;
+            maxpath = path;
+        }
+        if (wsf < cri && wsf > smaller)
+        {
+            smaller = wsf;
+            smallerpath = path;
+        }
+        if (wsf > cri && wsf < larger)
+        {
+            larger = wsf;
+            largerpath = path;
+        }
         return;
     }
 
     vis[src] = true;
     for (auto p : gp[src])
         if (!vis[p.first])
-            Solutions(p.first, dest, wsf + p.second, path + to_string(p.first), gp, vis, pq);
+            Solutions(p.first, dest, wsf + p.second, path + to_string(p.first), gp, vis, pq, cri, k);
     vis[src] = false;
 }
 
-string Smallest_path(priority_queue<pair<int, string>> pq)
-{
-    while (pq.size() != 1)
-        pq.pop();
-
-    auto top = pq.top();
-    string ans = top.second + "@" + to_string(top.first);
-    return ans;
-}
-string Largest_path(priority_queue<pair<int, string>> pq)
-{
-    auto top = pq.top();
-    string ans = top.second + "@" + to_string(top.first);
-    return ans;
-}
-string Just_Larger_path(priority_queue<pair<int, string>> pq, int cri)
-{
-    auto last = pq.top();
-    while (pq.top().first > cri)
-    {
-        last = pq.top();
-        pq.pop();
-    }
-    string ans = last.second + "@" + to_string(last.first);
-    return ans;
-}
-string Just_Smaller_path(priority_queue<pair<int, string>> pq, int cri)
-{
-    auto top = pq.top();
-    while (top.first >= cri)
-    {
-        pq.pop();
-        top = pq.top();
-    }
-
-    if (!pq.empty())
-        top = pq.top();
-    // else
-    //     return "";
-    string ans = top.second + "@" + to_string(top.first);
-    return ans;
-}
 string Kth_Largest_path(priority_queue<pair<int, string>> pq, int k)
 {
     while (--k)
@@ -91,11 +79,11 @@ int main()
 
     priority_queue<pair<int, string>> pq;
     vector<bool> vis(n, false);
-    Solutions(src, dest, 0, to_string(src), gp, vis, pq);
+    Solutions(src, dest, 0, to_string(src), gp, vis, pq, cri, k);
 
-    cout << "Smallest Path = " << Smallest_path(pq) << endl;
-    cout << "Largest Path = " << Largest_path(pq) << endl;
-    cout << "Just Larger Path than " << cri << " = " << Just_Larger_path(pq, cri) << endl;
-    cout << "Just Smaller Path than " << cri << " = " << Just_Smaller_path(pq, cri) << endl;
+    cout << "Smallest Path = " << minpath << "@" << mini << endl;
+    cout << "Largest Path = " << maxpath << "@" << maxi << endl;
+    cout << "Just Larger Path than " << cri << " = " << largerpath << "@" << larger << endl;
+    cout << "Just Smaller Path than " << cri << " = " << smallerpath << "@" << smaller << endl;
     cout << k << "th largest path = " << Kth_Largest_path(pq, k) << endl;
 }
